@@ -244,6 +244,7 @@ function default_settings() {
   MTU=""
   START_VM="yes"
   METHOD="default"
+  FS="ufs"
 
   echo -e "${DGN}Using Virtual Machine ID: ${BGN}${VMID}${CL}"
   echo -e "${DGN}Using Hostname: ${BGN}${HN}${CL}"
@@ -265,6 +266,7 @@ function default_settings() {
     echo -e "${DGN}Using WAN Bridge: ${BGN}${WAN_BRG}${CL}"
   fi
   echo -e "${DGN}Using Interface MTU Size: ${BGN}Default${CL}"
+  echo -e "${DGN}OPNsense File System (FS): ${FS}${CL}"
   echo -e "${DGN}Start VM when completed: ${BGN}yes${CL}"
   echo -e "${BL}Creating a OPNsense VM using the above default settings${CL}"
 }
@@ -302,6 +304,21 @@ function advanced_settings() {
       echo -e "${DGN}Using Machine Type: ${BGN}$MACH${CL}"
       FORMAT=",efitype=4m"
       MACHINE=""
+    fi
+  else
+    exit-script
+  fi
+
+  if FILESYST=$(whiptail --backtitle "Proxmox VE Helper Scripts" --title "FILE SYSTEM" --radiolist "Choose" --cancel-button Exit-Script 10 58 2 \
+    "0" "UFS (Default)" ON \
+    "1" "ZFS" OFF \
+    3>&1 1>&2 2>&3); then
+    if [ $FS = "1" ]; then
+      echo -e "${DGN}Using File System: ${BGN}UFS${CL}"
+      FS="ufs"
+    else
+      echo -e "${DGN}Using File System: ${BGN}ZFS${CL}"
+      FS="zfs"
     fi
   else
     exit-script
@@ -545,7 +562,7 @@ fi
 msg_ok "Using ${CL}${BL}$STORAGE${CL} ${GN}for Storage Location."
 msg_ok "Virtual Machine ID is ${CL}${BL}$VMID${CL}."
 msg_info "Retrieving the URL for the OPNsense Qcow2 Disk Image"
-URL=https://download.freebsd.org/releases/VM-IMAGES/${BASE_OS_VERSION}-RELEASE/amd64/Latest/FreeBSD-${BASE_OS_VERSION}-RELEASE-amd64.qcow2.xz
+URL=https://download.freebsd.org/releases/VM-IMAGES/${BASE_OS_VERSION}-RELEASE/amd64/Latest/FreeBSD-${BASE_OS_VERSION}-RELEASE-amd64-${FS}.qcow2.xz
 sleep 2
 msg_ok "${CL}${BL}${URL}${CL}"
 curl -f#SL -o "$(basename "$URL")" "$URL"

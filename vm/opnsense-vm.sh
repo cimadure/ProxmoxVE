@@ -26,9 +26,8 @@ NSAPP="opnsense-vm"
 var_os="opnsense"
 var_version="25.1"
 
-
 # FreeBSD Version
-#BASE_OS_VERSION="14.2"
+BASE_OS_VERSION="14.2"
 
 #
 GEN_MAC=02:$(openssl rand -hex 5 | awk '{print toupper($0)}' | sed 's/\(..\)/\1:/g; s/.$//')

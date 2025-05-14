@@ -25,6 +25,8 @@ METHOD=""
 NSAPP="opnsense-vm"
 var_os="opnsense"
 var_version="25.1"
+
+
 # FreeBSD Version
 BASE_OS_VERSION="14.2"
 
